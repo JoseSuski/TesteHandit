@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="utf-8">
+</head>
+
+<body>
+
+	<input type="text" id="item" autofocus>
+	<input type="button" name="Criar" value="Adicionar item" id="botao">
+	<div class="container" id="container"></div>
+
+	<script>
+
+		var ids = 1;
+		var item = window.document.getElementById('item')
+		var botao = window.document.getElementById('botao')
+		botao.addEventListener('click', botoes)
+
+		function remover(id) {
+			document.getElementById('removerItem' + id).outerHTML = '';
+		}
+
+		function botoes() {
+			var container = document.getElementById('container');
+			var table = document.createElement('table');
+			var tr = document.createElement('tr');
+			var th = document.createElement('th');
+			var remove = document.createElement('th');
+			var inputRemover = document.createElement('input');
+			var texto = document.createTextNode(item.value);
+			var inputCheckBox = document.createElement('input');
+			inputCheckBox.type = 'checkbox';
+
+			table.setAttribute("id", "removerItem" + ids);
+			inputRemover.setAttribute("type", "button");
+			inputRemover.setAttribute("value", "Remover item");
+			inputRemover.setAttribute("onclick", "remover(" + ids + ")");
+
+			th.appendChild(texto);
+			remove.appendChild(inputRemover);
+			container.appendChild(table);
+			table.appendChild(tr);
+			tr.appendChild(inputCheckBox);
+			tr.appendChild(th);
+			tr.appendChild(remove);
+			ids++;
+
+			document.getElementById('item').value=''
+		}
+
+	</script>
+
+</body>
+
+</html>
