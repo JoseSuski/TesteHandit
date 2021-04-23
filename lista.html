@@ -1,56 +1,120 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+<html>
 
 <head>
-	<meta charset="utf-8">
+    <meta charset="utf-8">
+
 </head>
 
 <body>
 
-	<input type="text" id="item" autofocus>
-	<input type="button" name="Criar" value="Adicionar item" id="botao">
-	<div class="container" id="container"></div>
+    <input id="item" type="text">
+    <input type="button" name="Adicionar" value="Adicionar item" id="adicionarItem">
+    <label id="contador"></label>
 
-	<script>
+    <p>Não Checados</p>
+    <ul id="naoChecados">
+    </ul>
 
-		var ids = 1;
-		var item = window.document.getElementById('item')
-		var botao = window.document.getElementById('botao')
-		botao.addEventListener('click', botoes)
+    <p>Checados</p>
+    <ul id="checados">
+    </ul>
 
-		function remover(id) {
-			document.getElementById('removerItem' + id).outerHTML = '';
-		}
+    <script>
 
-		function botoes() {
-			var container = document.getElementById('container');
-			var table = document.createElement('table');
-			var tr = document.createElement('tr');
-			var th = document.createElement('th');
-			var remove = document.createElement('th');
-			var inputRemover = document.createElement('input');
-			var texto = document.createTextNode(item.value);
-			var inputCheckBox = document.createElement('input');
-			inputCheckBox.type = 'checkbox';
+        var item = window.document.getElementById("item");
+        var botaoAddItem = window.document.getElementById('adicionarItem');
+        var botaoNaoChecados = window.document.getElementById("naoChecados");
+        var botaoChecados = window.document.getElementById("checados");
+        var contador = 0;
 
-			table.setAttribute("id", "removerItem" + ids);
-			inputRemover.setAttribute("type", "button");
-			inputRemover.setAttribute("value", "Remover item");
-			inputRemover.setAttribute("onclick", "remover(" + ids + ")");
+        function criarItem(tarefa) {
+            var li = document.createElement("li");
+            var label = document.createElement("label");
+            var inputCheckBox = document.createElement("input");
+            var inputEditar = document.createElement("input");
+            var buttonEditar = document.createElement("button");
+            var buttonRemover = document.createElement("button");
 
-			th.appendChild(texto);
-			remove.appendChild(inputRemover);
-			container.appendChild(table);
-			table.appendChild(tr);
-			tr.appendChild(inputCheckBox);
-			tr.appendChild(th);
-			tr.appendChild(remove);
-			ids++;
+            label.innerText = tarefa;
+            inputCheckBox.type = "checkbox";
+            inputEditar.type = "text";
 
-			document.getElementById('item').value=''
-		}
+            buttonEditar.innerText = "Editar";
+            buttonEditar.className = "editar";
+            buttonRemover.innerText = "Remover";
+            buttonRemover.className = "remover";
 
-	</script>
+            li.appendChild(inputCheckBox);
+            li.appendChild(label);
+            li.appendChild(inputEditar);
+            li.appendChild(buttonEditar);
+            li.appendChild(buttonRemover);
+
+            contador++
+            document.getElementById('contador').textContent = contador;
+
+            return li;
+        }
+
+        function addItem() {
+            var listaItem = criarItem(item.value);
+            botaoNaoChecados.appendChild(listaItem);
+            manipulaItem(listaItem, checados);
+            item.value = "";
+        }
+
+        function editarItem() {
+            var item = this.parentNode;
+            var editInput = item.querySelector('input[type=text]');
+            var label = item.querySelector("label");
+            var classe = item.classList.contains("editar");
+            if (classe) {
+                label.innerText = editInput.value;
+            } else {
+                editInput.value = label.innerText;
+            }
+            item.classList.toggle("editar");
+        }
+
+        function removerItem() {
+            var item = this.parentNode;
+            var ul = item.parentNode;
+            ul.removeChild(item);
+            contador --;
+            document.getElementById('contador').textContent = contador;
+        }
+
+        function checados() {
+            var item = this.parentNode;
+            botaoChecados.appendChild(item);
+            manipulaItem(item, naoChecados);
+        }
+
+        function naoChecados() {
+            var item = this.parentNode;
+            botaoNaoChecados.appendChild(item);
+            manipulaItem(item, checados);
+        }
+
+        botaoAddItem.addEventListener("click", addItem);
+
+        function manipulaItem(item, checkBoxEvt) {
+            var checkBox = item.querySelector("input[type=checkbox]");
+            var buttonEditar = item.querySelector("button.editar");
+            var buttonRemover = item.querySelector("button.remover");
+            buttonEditar.onclick = editarItem;
+            buttonRemover.onclick = removerItem;
+            checkBox.onchange = checkBoxEvt;
+        }
+
+        for (var i = 0; i < botaoNaoChecados.children.length; i++) {
+            manipulaItem(botaoNaoChecados.children[i], checados);
+        }
+
+        for (var i = 0; i < botaoChecados.children.length; i++) {
+            manipulaItem(botaoChecados.children[i], naoChecados);
+        }
+    </script>
 
 </body>
 
